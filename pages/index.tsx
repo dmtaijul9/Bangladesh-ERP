@@ -1,11 +1,197 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import Image from "next/image";
+import { Inter } from "@next/font/google";
+import styles from "../styles/Home.module.css";
+import CustomSelect from "../components/CustomSelect";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { countries } from "../lib/data";
+import { BsArrowBarRight } from "react-icons/bs";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
-export default function Home() {
+export const getServerSideProps = async () => {
+  const res1 = await axios.get(
+    "https://raw.githubusercontent.com/nuhil/bangladesh-geocode/master/districts/districts.json"
+  );
+  const res2 = await axios.get(
+    "https://raw.githubusercontent.com/nuhil/bangladesh-geocode/master/divisions/divisions.json"
+  );
+  const res3 = await axios.get(
+    "https://raw.githubusercontent.com/nuhil/bangladesh-geocode/master/unions/unions.json"
+  );
+  const res4 = await axios.get(
+    "https://raw.githubusercontent.com/nuhil/bangladesh-geocode/master/upazilas/upazilas.json"
+  );
+
+  return {
+    props: {
+      districts: res1.data[2].data,
+      divisions: res2.data[2].data.map((item) => {
+        return { ...item, country_id: "1" };
+      }),
+      upazilas: res4.data[2].data,
+      union: res3.data[2].data,
+      countries,
+    },
+  };
+};
+
+export default function Home(props) {
+  // Billing address Form state. ....
+  const [siteName, setSiteName] = useState("");
+  const [country, setCountry] = useState("");
+  const [devision, setDevision] = useState("");
+  const [district, setDistrict] = useState("");
+  const [city, setCity] = useState("");
+  const [union, setUnion] = useState("");
+  const [zipcode, setZipcode] = useState("");
+  const [village, setVillage] = useState("");
+  const [apartment, setApartment] = useState("");
+  const [phone, setPhone] = useState("");
+  const [fax, setFax] = useState("");
+
+  //Ending: Billing address Form state. ....
+
+  // Shipping address form state
+  const [shipSiteName, setShipSiteName] = useState("");
+  const [shipCountry, setShipCountry] = useState("");
+  const [shipDevision, setShipDevision] = useState("");
+  const [shipDistrict, setShipDistrict] = useState("");
+  const [shipCity, setShipCity] = useState("");
+  const [shipUnion, setShipUnion] = useState("");
+  const [shipZipcode, setShipZipcode] = useState("");
+  const [shipVillage, setShipVillage] = useState("");
+  const [shipApartment, setShipApartment] = useState("");
+  const [shipPhone, setShipPhone] = useState("");
+  const [shipFax, setShipFax] = useState("");
+
+  // Ending: Shipping address form state
+
+  // Billing Address effect
+  useEffect(() => {
+    if (!country || country.id !== devision.country_id) {
+      setDevision("");
+    }
+    if (!devision || devision.id !== district.division_id) {
+      setDistrict("");
+    }
+    if (!district || district.id !== city.district_id) {
+      setCity("");
+    }
+    if (!city || city.id !== union.upazilla_id) {
+      setUnion("");
+      setZipcode("");
+      setVillage("");
+    }
+  }, [country, devision, district, city]);
+  //Ending: Billing Address effect
+  useEffect(() => {
+    if (!shipCountry || shipCountry.id !== shipDevision.country_id) {
+      setShipDevision("");
+    }
+    if (!shipDevision || shipDevision.id !== shipDistrict.division_id) {
+      setShipDistrict("");
+    }
+    if (!shipDistrict || shipDistrict.id !== shipCity.district_id) {
+      setShipCity("");
+    }
+    if (!shipCity || shipCity.id !== shipUnion.upazilla_id) {
+      setShipUnion("");
+      setShipZipcode("");
+      setShipVillage("");
+    }
+  }, [shipCountry, shipDevision, shipDistrict, shipCity]);
+  // Shipping Address Effect
+
+  //Ending: Shipping Address Effect
+
+  // filtering data for billing address
+
+  const filteredDivision = props.divisions.filter(
+    (division) => division.country_id === country.id
+  );
+
+  const filteredDistrict = props.districts.filter(
+    (district) => district.division_id === devision.id
+  );
+  const filteredCity = props.upazilas.filter(
+    (upazila) => upazila.district_id === district.id
+  );
+  const filteredUnion = props.union.filter((union) => {
+    return union.upazilla_id === city.id;
+  });
+
+  // Ending: Filtering data for billing address
+
+  // Filtering data for shipping address
+
+  const filteredShipDivision = props.divisions.filter(
+    (division) => division.country_id === shipCountry.id
+  );
+
+  const filteredShipDistrict = props.districts.filter(
+    (district) => district.division_id === shipDevision.id
+  );
+  const filteredShipCity = props.upazilas.filter(
+    (upazila) => upazila.district_id === shipDistrict.id
+  );
+  const filteredShipUnion = props.union.filter((union) => {
+    return union.upazilla_id === shipCity.id;
+  });
+
+  // Ending : filtering data for shipping address
+
+  // Billing address copeing to Shipping address
+
+  const handlerCopyToShipping = () => {
+    // First I am checking if any field is empty in billing address then i will not copy . and i will show warning
+    if (
+      siteName === "" ||
+      country === "" ||
+      devision === "" ||
+      district === "" ||
+      city === "" ||
+      union === "" ||
+      zipcode === "" ||
+      village === "" ||
+      apartment === "" ||
+      phone === "" ||
+      fax === ""
+    ) {
+      console.log("Some field is emplty");
+
+      console.log(
+        siteName,
+        country,
+        devision,
+        district,
+        city,
+        union,
+        zipcode,
+        village,
+        apartment,
+        phone,
+        fax
+      );
+      return;
+    }
+
+    setShipSiteName(siteName);
+    setShipCountry(country);
+    setShipDevision(devision);
+    setShipDistrict(district);
+    setShipCity(city);
+    setShipUnion(union);
+    setShipZipcode(zipcode);
+    setShipVillage(village);
+    setShipApartment(apartment);
+    setShipPhone(phone);
+    setShipFax(fax);
+  };
+
+  //Ending: Billing address copeing to Shipping address
+
   return (
     <>
       <Head>
@@ -15,109 +201,267 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>pages/index.tsx</code>
-          </p>
-          <div>
-            <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              By{' '}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
-            </a>
+        <section className={styles.form_area}>
+          <div className={styles.billing_area}>
+            <div>
+              <h1>Billing Address</h1>
+              <p>Attention</p>
+            </div>
+            <form>
+              <div className={styles.form_field}>
+                <label htmlFor="Name"></label>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Enter person/site name"
+                  value={siteName}
+                  onChange={(e) => {
+                    setSiteName(e.target.value);
+                  }}
+                />
+              </div>
+              <div className={styles.form_field}>
+                <label htmlFor="country">Country</label>
+                <CustomSelect
+                  data={props.countries}
+                  selectedItem={country}
+                  setSelectedItem={setCountry}
+                  placeholder="Select country"
+                  isDisabled={false}
+                />
+              </div>
+              <div className={styles.form_field}>
+                <label htmlFor="division">Devision/Province/State</label>
+                <CustomSelect
+                  data={filteredDivision}
+                  selectedItem={devision}
+                  setSelectedItem={setDevision}
+                  placeholder="Select Division"
+                  isDisabled={!country}
+                />
+              </div>
+              <div className={styles.form_field}>
+                <label htmlFor="district">District</label>
+                <CustomSelect
+                  data={filteredDistrict}
+                  selectedItem={district}
+                  placeholder="Select District"
+                  setSelectedItem={setDistrict}
+                  isDisabled={!devision}
+                />
+              </div>
+              <div className={styles.form_field}>
+                <label htmlFor="city">City/Sub District/Thana</label>
+                <CustomSelect
+                  data={filteredCity}
+                  selectedItem={city}
+                  placeholder="Select City"
+                  setSelectedItem={setCity}
+                  isDisabled={!district}
+                />
+              </div>
+              <div className={styles.form_field}>
+                <label htmlFor="area">Union/Area/Town</label>
+                <CustomSelect
+                  data={filteredUnion}
+                  selectedItem={union}
+                  placeholder="Select Union"
+                  setSelectedItem={setUnion}
+                  isDisabled={!city}
+                  anyInput
+                />
+              </div>
+              <div className={styles.form_field}>
+                <label htmlFor="zipcode">Zipcode</label>
+                <CustomSelect
+                  data={[]}
+                  selectedItem={zipcode}
+                  placeholder="Select zipcode"
+                  setSelectedItem={setZipcode}
+                  isDisabled={!union}
+                  anyInput
+                />
+              </div>
+              <div className={styles.form_field}>
+                <label htmlFor="village">Street Adress/Village</label>
+                <CustomSelect
+                  data={[]}
+                  selectedItem={village}
+                  placeholder="Select Village"
+                  setSelectedItem={setVillage}
+                  isDisabled={!zipcode}
+                  anyInput
+                />
+              </div>
+              <div className={styles.form_field}>
+                <label htmlFor="apartment">House/Suite/apartment no</label>
+                <input
+                  type="text"
+                  name="apartment"
+                  value={apartment}
+                  onChange={(e) => {
+                    setApartment(e.target.value);
+                  }}
+                />
+              </div>
+              <div className={styles.form_field}>
+                <label htmlFor="phone">Phone</label>
+                <input
+                  type="text"
+                  name="phone"
+                  value={phone}
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                  }}
+                />
+              </div>
+              <div className={styles.form_field}>
+                <label htmlFor="fax">Fax</label>
+                <input
+                  type="text"
+                  name="fax"
+                  value={fax}
+                  onChange={(e) => {
+                    setFax(e.target.value);
+                  }}
+                />
+              </div>
+            </form>
           </div>
-        </div>
-
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
-          />
-          <div className={styles.thirteen}>
-            <Image
-              src="/thirteen.svg"
-              alt="13"
-              width={40}
-              height={31}
-              priority
-            />
+          <div className={styles.shipping_area}>
+            <div>
+              <h1 className={styles.shipping_header}>
+                <span>Shipping Address</span>{" "}
+                <button onClick={handlerCopyToShipping}>
+                  {" "}
+                  <BsArrowBarRight /> Copy Billing Address
+                </button>
+              </h1>
+              <p>Attention</p>
+            </div>
+            <form>
+              <div className={styles.form_field}>
+                <label htmlFor="Name"></label>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Enter person/site name"
+                  value={shipSiteName}
+                  onChange={(e) => {
+                    setShipSiteName(e.target.value);
+                  }}
+                />
+              </div>
+              <div className={styles.form_field}>
+                <label htmlFor="country">Country</label>
+                <CustomSelect
+                  data={props.countries}
+                  placeholder="Select Country"
+                  selectedItem={shipCountry}
+                  setSelectedItem={setShipCountry}
+                  isDisabled={false}
+                />
+              </div>
+              <div className={styles.form_field}>
+                <label htmlFor="division">Devision/Province/State</label>
+                <CustomSelect
+                  data={filteredShipDivision}
+                  selectedItem={shipDevision}
+                  placeholder="Select Division"
+                  setSelectedItem={setShipDevision}
+                  isDisabled={!shipCountry}
+                />
+              </div>
+              <div className={styles.form_field}>
+                <label htmlFor="district">District</label>
+                <CustomSelect
+                  data={filteredShipDistrict}
+                  selectedItem={shipDistrict}
+                  placeholder="Select District"
+                  setSelectedItem={setShipDistrict}
+                  isDisabled={!shipDevision}
+                />
+              </div>
+              <div className={styles.form_field}>
+                <label htmlFor="city">City/Sub District/Thana</label>
+                <CustomSelect
+                  data={filteredShipCity}
+                  selectedItem={shipCity}
+                  placeholder="Select City"
+                  setSelectedItem={setShipCity}
+                  isDisabled={!shipDistrict}
+                />
+              </div>
+              <div className={styles.form_field}>
+                <label htmlFor="area">Union/Area/Town</label>
+                <CustomSelect
+                  data={filteredShipUnion}
+                  selectedItem={shipUnion}
+                  placeholder="Select Union/Area/Town"
+                  setSelectedItem={setShipUnion}
+                  isDisabled={!shipCity}
+                  anyInput
+                />
+              </div>
+              <div className={styles.form_field}>
+                <label htmlFor="zipcode">Zipcode</label>
+                <CustomSelect
+                  data={[]}
+                  selectedItem={shipZipcode}
+                  placeholder="Select Zipcode"
+                  setSelectedItem={setShipZipcode}
+                  isDisabled={!shipUnion}
+                  anyInput
+                />
+              </div>
+              <div className={styles.form_field}>
+                <label htmlFor="village">Street Adress/Village</label>
+                <CustomSelect
+                  data={[]}
+                  selectedItem={shipVillage}
+                  placeholder="Select Village"
+                  setSelectedItem={setShipVillage}
+                  isDisabled={!shipZipcode}
+                  anyInput
+                />
+              </div>
+              <div className={styles.form_field}>
+                <label htmlFor="apartment">House/Suite/apartment no</label>
+                <input
+                  type="text"
+                  name="apartment"
+                  value={shipApartment}
+                  onChange={(e) => {
+                    setShipApartment(e.target.value);
+                  }}
+                />
+              </div>
+              <div className={styles.form_field}>
+                <label htmlFor="phone">Phone</label>
+                <input
+                  type="text"
+                  name="phone"
+                  value={shipPhone}
+                  onChange={(e) => {
+                    setShipPhone(e.target.value);
+                  }}
+                />
+              </div>
+              <div className={styles.form_field}>
+                <label htmlFor="fax">Fax</label>
+                <input
+                  type="text"
+                  name="fax"
+                  value={shipFax}
+                  onChange={(e) => {
+                    setShipFax(e.target.value);
+                  }}
+                />
+              </div>
+            </form>
           </div>
-        </div>
-
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
-        </div>
+        </section>
       </main>
     </>
-  )
+  );
 }
