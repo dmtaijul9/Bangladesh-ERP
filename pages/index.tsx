@@ -31,7 +31,7 @@ export const getServerSideProps = async () => {
       districts: res1.data[2].data,
 
       // in division : there have no country id... thats why i address courty id for bangladesh ....
-      divisions: res2.data[2].data.map((item) => {
+      divisions: res2.data[2].data.map((item: any) => {
         return { ...item, country_id: "1" };
       }),
       upazilas: res4.data[2].data,
@@ -94,14 +94,14 @@ interface PropsType {
 export default function Home(props: PropsType) {
   // Billing address Form state. ....
   const [siteName, setSiteName] = useState("");
-  const [country, setCountry] = useState<CountryType | string>("");
-  const [devision, setDevision] = useState<DivisionType | string>("");
-  const [district, setDistrict] = useState<DistrictType | string>("");
-  const [city, setCity] = useState<UpazillaType | string>("");
-  const [union, setUnion] = useState<UnionType | string>("");
-  const [zipcode, setZipcode] = useState("");
-  const [village, setVillage] = useState("");
-  const [apartment, setApartment] = useState("");
+  const [country, setCountry] = useState<CountryType | any>("");
+  const [devision, setDevision] = useState<DivisionType | any>("");
+  const [district, setDistrict] = useState<DistrictType | any>("");
+  const [city, setCity] = useState<UpazillaType | any>("");
+  const [union, setUnion] = useState<UnionType | any>("");
+  const [zipcode, setZipcode] = useState<any>("");
+  const [village, setVillage] = useState<any>("");
+  const [apartment, setApartment] = useState<any>("");
   const [phone, setPhone] = useState("");
   const [fax, setFax] = useState("");
 
@@ -109,14 +109,14 @@ export default function Home(props: PropsType) {
 
   // Shipping address form state
   const [shipSiteName, setShipSiteName] = useState("");
-  const [shipCountry, setShipCountry] = useState<CountryType | string>("");
-  const [shipDevision, setShipDevision] = useState<DivisionType | string>("");
-  const [shipDistrict, setShipDistrict] = useState<DistrictType | string>("");
-  const [shipCity, setShipCity] = useState<UpazillaType | string>("");
-  const [shipUnion, setShipUnion] = useState<UnionType | string>("");
-  const [shipZipcode, setShipZipcode] = useState("");
-  const [shipVillage, setShipVillage] = useState("");
-  const [shipApartment, setShipApartment] = useState("");
+  const [shipCountry, setShipCountry] = useState<CountryType | any>("");
+  const [shipDevision, setShipDevision] = useState<DivisionType | any>("");
+  const [shipDistrict, setShipDistrict] = useState<DistrictType | any>("");
+  const [shipCity, setShipCity] = useState<UpazillaType | any>("");
+  const [shipUnion, setShipUnion] = useState<UnionType | any>("");
+  const [shipZipcode, setShipZipcode] = useState<any>("");
+  const [shipVillage, setShipVillage] = useState<any>("");
+  const [shipApartment, setShipApartment] = useState<any>("");
   const [shipPhone, setShipPhone] = useState("");
   const [shipFax, setShipFax] = useState("");
 
@@ -124,7 +124,10 @@ export default function Home(props: PropsType) {
 
   // Billing Address effect
   useEffect(() => {
-    if (!country || country.id !== devision.country_id) {
+    if (
+      !country ||
+      (country && devision && country.id !== devision.country_id)
+    ) {
       setDevision("");
     }
     if (!devision || devision.id !== district.division_id) {

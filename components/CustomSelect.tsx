@@ -14,7 +14,7 @@ const CustomSelect = ({
 
   const [search, setSearch] = useState("");
 
-  const filetedData = data.filter((item) =>
+  const filetedData = data.filter((item: any) =>
     item?.name?.toLowerCase().startsWith(search)
   );
   return (
@@ -77,7 +77,7 @@ const CustomSelect = ({
           >
             Select an item
           </li>
-          {filetedData.map((item) => {
+          {filetedData.map((item: any) => {
             return (
               <li
                 style={item.id === selectedItem.id ? { color: "green" } : {}}
