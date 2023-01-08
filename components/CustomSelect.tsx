@@ -42,7 +42,11 @@ const CustomSelect = ({
               value={search}
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
-                  setSelectedItem({ id: "1", name: search });
+                  setSelectedItem({
+                    id: "1",
+                    name: search,
+                    customeSelect: true,
+                  });
                   setOpenContent(false);
                   setSearch("");
                 }
@@ -54,7 +58,7 @@ const CustomSelect = ({
           ) : (
             <input
               spellCheck="false"
-              type="search"
+              type="text"
               placeholder="Search"
               value={search}
               onChange={(e) => {

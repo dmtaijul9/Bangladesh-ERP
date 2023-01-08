@@ -36,3 +36,9 @@
   font-weight: bold;
   cursor: pointer;
 }
+
+@media screen and (max-width: 769px) {
+  .form_area {
+    flex-direction: column;
+  }
+}

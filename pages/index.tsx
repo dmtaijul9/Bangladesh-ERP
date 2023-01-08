@@ -7,6 +7,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { countries } from "../lib/data";
 import { BsArrowBarRight } from "react-icons/bs";
+import { toast } from "react-toastify";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -37,14 +38,61 @@ export const getServerSideProps = async () => {
   };
 };
 
-export default function Home(props) {
+interface CountryType {
+  id: string;
+  name: string;
+  bn_name: string;
+  lat: string;
+  long: string;
+}
+
+interface DistrictType {
+  id: string;
+  division_id: string;
+  name: string;
+  bn_name: string;
+  lat: string;
+  lon: string;
+  url: string;
+}
+interface DivisionType {
+  id: string;
+  country_id: string;
+  name: string;
+  bn_name: string;
+  url: string;
+}
+interface UpazillaType {
+  id: string;
+  district_id: string;
+  name: string;
+  bn_name: string;
+  url: string;
+}
+interface UnionType {
+  id: string;
+  upazilla_id: string;
+  name: string;
+  bn_name: string;
+  url: string;
+}
+
+interface PropsType {
+  countries: CountryType[];
+  divisions: DivisionType[];
+  districts: DistrictType[];
+  upazilas: UpazillaType[];
+  union: UnionType[];
+}
+
+export default function Home(props: PropsType) {
   // Billing address Form state. ....
   const [siteName, setSiteName] = useState("");
-  const [country, setCountry] = useState("");
-  const [devision, setDevision] = useState("");
-  const [district, setDistrict] = useState("");
-  const [city, setCity] = useState("");
-  const [union, setUnion] = useState("");
+  const [country, setCountry] = useState<CountryType | string>("");
+  const [devision, setDevision] = useState<DivisionType | string>("");
+  const [district, setDistrict] = useState<DistrictType | string>("");
+  const [city, setCity] = useState<UpazillaType | string>("");
+  const [union, setUnion] = useState<UnionType | string>("");
   const [zipcode, setZipcode] = useState("");
   const [village, setVillage] = useState("");
   const [apartment, setApartment] = useState("");
@@ -55,11 +103,11 @@ export default function Home(props) {
 
   // Shipping address form state
   const [shipSiteName, setShipSiteName] = useState("");
-  const [shipCountry, setShipCountry] = useState("");
-  const [shipDevision, setShipDevision] = useState("");
-  const [shipDistrict, setShipDistrict] = useState("");
-  const [shipCity, setShipCity] = useState("");
-  const [shipUnion, setShipUnion] = useState("");
+  const [shipCountry, setShipCountry] = useState<CountryType | string>("");
+  const [shipDevision, setShipDevision] = useState<DivisionType | string>("");
+  const [shipDistrict, setShipDistrict] = useState<DistrictType | string>("");
+  const [shipCity, setShipCity] = useState<UpazillaType | string>("");
+  const [shipUnion, setShipUnion] = useState<UnionType | string>("");
   const [shipZipcode, setShipZipcode] = useState("");
   const [shipVillage, setShipVillage] = useState("");
   const [shipApartment, setShipApartment] = useState("");
@@ -77,14 +125,26 @@ export default function Home(props) {
       setDistrict("");
     }
     if (!district || district.id !== city.district_id) {
-      setCity("");
+      if (!city.customeSelect || !district) {
+        setCity("");
+      }
     }
     if (!city || city.id !== union.upazilla_id) {
-      setUnion("");
-      setZipcode("");
-      setVillage("");
+      if (!union.customeSelect || !city) {
+        setUnion("");
+      }
     }
-  }, [country, devision, district, city]);
+    if (!union || union.id !== zipcode?.union_id) {
+      if (!zipcode.customeSelect || !union) {
+        setZipcode("");
+      }
+    }
+    if (!zipcode || zipcode.id !== village?.union_id) {
+      if (!village.customeSelect || !zipcode) {
+        setVillage("");
+      }
+    }
+  }, [country, devision, district, city, union, zipcode, village]);
   //Ending: Billing Address effect
   useEffect(() => {
     if (!shipCountry || shipCountry.id !== shipDevision.country_id) {
@@ -94,14 +154,34 @@ export default function Home(props) {
       setShipDistrict("");
     }
     if (!shipDistrict || shipDistrict.id !== shipCity.district_id) {
-      setShipCity("");
+      if (!shipCity.customeSelect || !shipDistrict) {
+        setShipCity("");
+      }
     }
     if (!shipCity || shipCity.id !== shipUnion.upazilla_id) {
-      setShipUnion("");
-      setShipZipcode("");
-      setShipVillage("");
+      if (!shipUnion.customeSelect || !shipCity) {
+        setShipUnion("");
+      }
     }
-  }, [shipCountry, shipDevision, shipDistrict, shipCity]);
+    if (!shipUnion || shipUnion.id !== shipZipcode.upazilla_id) {
+      if (!shipZipcode.customeSelect || !shipUnion) {
+        setShipZipcode("");
+      }
+    }
+    if (!shipZipcode || shipZipcode.id !== shipVillage.upazilla_id) {
+      if (!shipVillage.customeSelect || !shipZipcode) {
+        setShipVillage("");
+      }
+    }
+  }, [
+    shipCountry,
+    shipDevision,
+    shipDistrict,
+    shipCity,
+    shipUnion,
+    shipZipcode,
+    shipVillage,
+  ]);
   // Shipping Address Effect
 
   //Ending: Shipping Address Effect
@@ -109,36 +189,41 @@ export default function Home(props) {
   // filtering data for billing address
 
   const filteredDivision = props.divisions.filter(
-    (division) => division.country_id === country.id
+    (division: DivisionType) => division.country_id === country.id
   );
 
   const filteredDistrict = props.districts.filter(
-    (district) => district.division_id === devision.id
+    (district: DistrictType) => district.division_id === devision.id
   );
   const filteredCity = props.upazilas.filter(
-    (upazila) => upazila.district_id === district.id
+    (upazila: UpazillaType) => upazila.district_id === district.id
   );
-  const filteredUnion = props.union.filter((union) => {
-    return union.upazilla_id === city.id;
-  });
+
+  const filteredUnion = city.customeSelect
+    ? []
+    : props.union.filter((union: UnionType) => {
+        return union.upazilla_id === city.id;
+      });
 
   // Ending: Filtering data for billing address
 
   // Filtering data for shipping address
 
   const filteredShipDivision = props.divisions.filter(
-    (division) => division.country_id === shipCountry.id
+    (division: DivisionType) => division.country_id === shipCountry.id
   );
 
   const filteredShipDistrict = props.districts.filter(
-    (district) => district.division_id === shipDevision.id
+    (district: DistrictType) => district.division_id === shipDevision.id
   );
   const filteredShipCity = props.upazilas.filter(
-    (upazila) => upazila.district_id === shipDistrict.id
+    (upazila: UpazillaType) => upazila.district_id === shipDistrict.id
   );
-  const filteredShipUnion = props.union.filter((union) => {
-    return union.upazilla_id === shipCity.id;
-  });
+  const filteredShipUnion = shipCity.customeSelect
+    ? []
+    : props.union.filter((union: UnionType) => {
+        return union.upazilla_id === shipCity.id;
+      });
 
   // Ending : filtering data for shipping address
 
@@ -159,21 +244,8 @@ export default function Home(props) {
       phone === "" ||
       fax === ""
     ) {
-      console.log("Some field is emplty");
+      toast.error("Some fiels is empty in billing address!");
 
-      console.log(
-        siteName,
-        country,
-        devision,
-        district,
-        city,
-        union,
-        zipcode,
-        village,
-        apartment,
-        phone,
-        fax
-      );
       return;
     }
 
@@ -191,6 +263,72 @@ export default function Home(props) {
   };
 
   //Ending: Billing address copeing to Shipping address
+
+  //Save address and database to use future
+
+  const saveHandler = () => {
+    if (
+      siteName === "" ||
+      country === "" ||
+      devision === "" ||
+      district === "" ||
+      city === "" ||
+      union === "" ||
+      zipcode === "" ||
+      village === "" ||
+      apartment === "" ||
+      phone === "" ||
+      fax === "" ||
+      shipSiteName === "" ||
+      shipCountry === "" ||
+      shipDevision === "" ||
+      shipDistrict === "" ||
+      shipCity === "" ||
+      shipUnion === "" ||
+      shipZipcode === "" ||
+      shipVillage === "" ||
+      shipApartment === "" ||
+      shipPhone === "" ||
+      shipFax === ""
+    ) {
+      toast.error("Some fiels is empty ");
+
+      return;
+    }
+    const newAddress = {
+      billingAddress: {
+        siteName,
+        country: country.name,
+        devision: devision.name,
+        district: district.name,
+        city: city.name,
+        union: union.name,
+        zipcode: zipcode.name,
+        village: village.name,
+        apartment,
+        phone,
+        fax,
+      },
+      shippingAddress: {
+        shipSiteName,
+        shipCountry: shipCountry.name,
+        shipDevision: shipDevision.name,
+        shipDistrict: shipDistrict.name,
+        shipCity: shipCity.name,
+        shipUnion: shipUnion.name,
+        shipZipcode: shipZipcode.name,
+        shipVillage: shipVillage.name,
+        shipApartment,
+        shipPhone,
+        shipFax,
+      },
+    };
+
+    toast.success("I made an object of address. Check console plz!");
+    console.log(newAddress);
+  };
+
+  //Ending: Save address and database to use future
 
   return (
     <>
@@ -258,6 +396,7 @@ export default function Home(props) {
                   placeholder="Select City"
                   setSelectedItem={setCity}
                   isDisabled={!district}
+                  anyInput
                 />
               </div>
               <div className={styles.form_field}>
@@ -390,6 +529,7 @@ export default function Home(props) {
                   placeholder="Select City"
                   setSelectedItem={setShipCity}
                   isDisabled={!shipDistrict}
+                  anyInput
                 />
               </div>
               <div className={styles.form_field}>
@@ -461,6 +601,11 @@ export default function Home(props) {
             </form>
           </div>
         </section>
+        <div style={{ textAlign: "right" }}>
+          <button className="continue_btn" onClick={saveHandler}>
+            Continue
+          </button>
+        </div>
       </main>
     </>
   );

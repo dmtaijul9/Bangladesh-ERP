@@ -23,3 +23,13 @@ li {
   align-items: center;
   cursor: pointer;
 }
+
+.continue_btn {
+  padding: 5px 20px;
+
+  border: none;
+  background: rgb(95, 95, 228);
+  color: #fff;
+  margin-top: 10px;
+  border-radius: 5px;
+}
