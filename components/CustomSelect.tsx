@@ -18,12 +18,20 @@ const CustomSelect = ({
     item?.name?.toLowerCase().startsWith(search.toLowerCase())
   );
   return (
-    <div className={styles.wrapper}>
+    <div className="wrapper">
       <button
         type="button"
-        className={styles.select_btn}
+        id="selectBtn"
+        className="select_btn"
         disabled={isDisabled}
-        onClick={() => {
+        onClick={(e) => {
+          const actives = document.querySelectorAll(".content_active");
+
+          actives.forEach((active) => {
+            active.classList.remove("contect_active");
+            active.classList.add("content");
+          });
+
           setOpenContent(!openContent);
         }}
       >
@@ -33,8 +41,8 @@ const CustomSelect = ({
         </span>
       </button>
       {/* To add custome select : you wil have to write first and then press Enter to select .  */}
-      <div className={openContent ? styles.content_active : styles.content}>
-        <div className={styles.search}>
+      <div className={openContent ? "content_active" : "content"}>
+        <div className="search">
           {anyInput ? (
             <input
               type="text"
@@ -67,7 +75,7 @@ const CustomSelect = ({
             />
           )}
         </div>
-        <ul className={styles.options}>
+        <ul className="options">
           <li
             onClick={() => {
               setSelectedItem("");
