@@ -15,7 +15,7 @@ const CustomSelect = ({
   const [search, setSearch] = useState("");
 
   const filetedData = data.filter((item: any) =>
-    item?.name?.toLowerCase().startsWith(search)
+    item?.name?.toLowerCase().startsWith(search.toLowerCase())
   );
   return (
     <div className={styles.wrapper}>
