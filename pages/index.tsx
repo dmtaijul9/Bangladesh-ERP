@@ -491,11 +491,10 @@ export default function Home(props: PropsType) {
                   <BsArrowBarRight /> Copy Billing Address
                 </button>
               </h1>
-              <p>Attention</p>
             </div>
             <form>
               <div className={styles.form_field}>
-                <label htmlFor="Name"></label>
+                <label htmlFor="Name">Attention</label>
                 <input
                   type="text"
                   name="name"

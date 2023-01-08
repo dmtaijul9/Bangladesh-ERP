@@ -32,7 +32,7 @@ const CustomSelect = ({
           <MdOutlineArrowDropDown />
         </span>
       </button>
-
+      {/* To add custome select : you wil have to write first and then press Enter to select .  */}
       <div className={openContent ? styles.content_active : styles.content}>
         <div className={styles.search}>
           {anyInput ? (
