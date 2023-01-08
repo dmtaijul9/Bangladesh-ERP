@@ -92,6 +92,8 @@ interface PropsType {
 }
 
 export default function Home(props: PropsType) {
+  const [openContent, setOpenContent] = useState("");
+
   // Billing address Form state. ....
   const [siteName, setSiteName] = useState("");
   const [country, setCountry] = useState<CountryType | any>("");
@@ -381,6 +383,9 @@ export default function Home(props: PropsType) {
                   setSelectedItem={setCountry}
                   placeholder="Select country"
                   isDisabled={false}
+                  name="country"
+                  openContent={openContent}
+                  setOpenContent={setOpenContent}
                 />
               </div>
               <div className={styles.form_field}>
@@ -391,6 +396,9 @@ export default function Home(props: PropsType) {
                   setSelectedItem={setDevision}
                   placeholder="Select Division"
                   isDisabled={!country}
+                  openContent={openContent}
+                  name="division"
+                  setOpenContent={setOpenContent}
                 />
               </div>
               <div className={styles.form_field}>
@@ -401,6 +409,9 @@ export default function Home(props: PropsType) {
                   placeholder="Select District"
                   setSelectedItem={setDistrict}
                   isDisabled={!devision}
+                  name="district"
+                  openContent={openContent}
+                  setOpenContent={setOpenContent}
                 />
               </div>
               <div className={styles.form_field}>
@@ -411,6 +422,9 @@ export default function Home(props: PropsType) {
                   placeholder="Select City"
                   setSelectedItem={setCity}
                   isDisabled={!district}
+                  name="city"
+                  openContent={openContent}
+                  setOpenContent={setOpenContent}
                   anyInput
                 />
               </div>
@@ -421,6 +435,9 @@ export default function Home(props: PropsType) {
                   selectedItem={union}
                   placeholder="Select Union/Area/Town"
                   setSelectedItem={setUnion}
+                  name="area"
+                  openContent={openContent}
+                  setOpenContent={setOpenContent}
                   isDisabled={!city}
                   anyInput
                 />
@@ -432,6 +449,9 @@ export default function Home(props: PropsType) {
                   selectedItem={zipcode}
                   placeholder="Select zipcode"
                   setSelectedItem={setZipcode}
+                  name="zipcode"
+                  openContent={openContent}
+                  setOpenContent={setOpenContent}
                   isDisabled={!union}
                   anyInput
                 />
@@ -443,6 +463,9 @@ export default function Home(props: PropsType) {
                   selectedItem={village}
                   placeholder="Select Village"
                   setSelectedItem={setVillage}
+                  name="village"
+                  openContent={openContent}
+                  setOpenContent={setOpenContent}
                   isDisabled={!zipcode}
                   anyInput
                 />
@@ -512,6 +535,9 @@ export default function Home(props: PropsType) {
                   placeholder="Select Country"
                   selectedItem={shipCountry}
                   setSelectedItem={setShipCountry}
+                  name="shipCountry"
+                  openContent={openContent}
+                  setOpenContent={setOpenContent}
                   isDisabled={false}
                 />
               </div>
@@ -522,6 +548,9 @@ export default function Home(props: PropsType) {
                   selectedItem={shipDevision}
                   placeholder="Select Division"
                   setSelectedItem={setShipDevision}
+                  name="shipDivision"
+                  openContent={openContent}
+                  setOpenContent={setOpenContent}
                   isDisabled={!shipCountry}
                 />
               </div>
@@ -531,6 +560,9 @@ export default function Home(props: PropsType) {
                   data={filteredShipDistrict}
                   selectedItem={shipDistrict}
                   placeholder="Select District"
+                  name="shipDistrict"
+                  openContent={openContent}
+                  setOpenContent={setOpenContent}
                   setSelectedItem={setShipDistrict}
                   isDisabled={!shipDevision}
                 />
@@ -540,6 +572,9 @@ export default function Home(props: PropsType) {
                 <CustomSelect
                   data={filteredShipCity}
                   selectedItem={shipCity}
+                  name="shipCity"
+                  openContent={openContent}
+                  setOpenContent={setOpenContent}
                   placeholder="Select City"
                   setSelectedItem={setShipCity}
                   isDisabled={!shipDistrict}
@@ -551,6 +586,9 @@ export default function Home(props: PropsType) {
                 <CustomSelect
                   data={filteredShipUnion}
                   selectedItem={shipUnion}
+                  name="shipUnion"
+                  openContent={openContent}
+                  setOpenContent={setOpenContent}
                   placeholder="Select Union/Area/Town"
                   setSelectedItem={setShipUnion}
                   isDisabled={!shipCity}
@@ -563,6 +601,9 @@ export default function Home(props: PropsType) {
                   data={[]}
                   selectedItem={shipZipcode}
                   placeholder="Select Zipcode"
+                  name="shipZipcode"
+                  openContent={openContent}
+                  setOpenContent={setOpenContent}
                   setSelectedItem={setShipZipcode}
                   isDisabled={!shipUnion}
                   anyInput
@@ -575,6 +616,9 @@ export default function Home(props: PropsType) {
                   selectedItem={shipVillage}
                   placeholder="Select Village"
                   setSelectedItem={setShipVillage}
+                  name="shipVillage"
+                  openContent={openContent}
+                  setOpenContent={setOpenContent}
                   isDisabled={!shipZipcode}
                   anyInput
                 />

@@ -9,30 +9,24 @@ const CustomSelect = ({
   setSelectedItem,
   placeholder,
   anyInput,
+  openContent,
+  setOpenContent,
+  name,
 }: any) => {
-  const [openContent, setOpenContent] = useState(false);
-
   const [search, setSearch] = useState("");
 
   const filetedData = data.filter((item: any) =>
     item?.name?.toLowerCase().startsWith(search.toLowerCase())
   );
   return (
-    <div className="wrapper">
+    <div className={styles.wrapper}>
       <button
         type="button"
         id="selectBtn"
-        className="select_btn"
+        className={styles.select_btn}
         disabled={isDisabled}
         onClick={(e) => {
-          const actives = document.querySelectorAll(".content_active");
-
-          actives.forEach((active) => {
-            active.classList.remove("contect_active");
-            active.classList.add("content");
-          });
-
-          setOpenContent(!openContent);
+          setOpenContent(name);
         }}
       >
         <span>{selectedItem ? selectedItem.name : placeholder}</span>
@@ -41,8 +35,12 @@ const CustomSelect = ({
         </span>
       </button>
       {/* To add custome select : you wil have to write first and then press Enter to select .  */}
-      <div className={openContent ? "content_active" : "content"}>
-        <div className="search">
+      <div
+        className={
+          openContent === name ? styles.content_active : styles.content
+        }
+      >
+        <div className={styles.search}>
           {anyInput ? (
             <input
               type="text"
@@ -55,7 +53,7 @@ const CustomSelect = ({
                     name: search,
                     customeSelect: true,
                   });
-                  setOpenContent(false);
+                  setOpenContent("");
                   setSearch("");
                 }
               }}
@@ -75,11 +73,11 @@ const CustomSelect = ({
             />
           )}
         </div>
-        <ul className="options">
+        <ul className={styles.options}>
           <li
             onClick={() => {
               setSelectedItem("");
-              setOpenContent(false);
+              setOpenContent("");
               setSearch("");
             }}
           >
@@ -92,7 +90,7 @@ const CustomSelect = ({
                 key={item.id}
                 onClick={(e) => {
                   setSelectedItem(item);
-                  setOpenContent(false);
+                  setOpenContent("");
                   setSearch("");
                 }}
               >
