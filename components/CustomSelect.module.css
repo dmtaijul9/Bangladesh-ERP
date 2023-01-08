@@ -1,18 +1,21 @@
+/* Wrapping total Select box  */
+
 .wrapper {
   width: 100%;
   position: relative;
 }
 
+/* Select button design .. This is the button -- which will trigger for  content show or not.  */
 .select_btn {
   padding: 5px 12px;
   background: #fff;
   width: 100%;
   display: flex;
   border: 1px solid black;
-  text-align: left;
   justify-content: space-between;
 }
 
+/* This is content : which will initially disply none: but when button will trigger . it will display block.  */
 .content {
   display: none;
 }
@@ -27,6 +30,7 @@
   position: absolute;
 }
 
+/* This is search input field  */
 .search input {
   height: 30px;
   width: 100%;
@@ -42,11 +46,14 @@
 .search input::placeholder {
   color: #bfbfbf;
 }
+
+/* displaying all the items to select .  */
 .content .options {
   margin-top: 10px;
-
   padding-right: 7px;
 }
+
+/* Designing the scrolbar to look Handy  */
 .content_active::-webkit-scrollbar {
   width: 7px;
 }
@@ -65,9 +72,13 @@
   height: 30px;
   padding: 0 13px;
 }
+
+/* When li is hover or selected then the css will do job . */
 .options li:hover,
 li.selected {
   border-radius: 5px;
   background: #f2f2f2;
   color: green;
 }
+
+/*  Thanks  */
