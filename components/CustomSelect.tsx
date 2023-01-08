@@ -26,7 +26,11 @@ const CustomSelect = ({
         className={styles.select_btn}
         disabled={isDisabled}
         onClick={(e) => {
-          setOpenContent(name);
+          if (openContent === name) {
+            setOpenContent("");
+          } else {
+            setOpenContent(name);
+          }
         }}
       >
         <span>{selectedItem ? selectedItem.name : placeholder}</span>
